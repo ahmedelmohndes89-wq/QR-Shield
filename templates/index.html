@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="QR Shield checks QR code destinations for common URL warning signs.">
+    <title>QR Shield | Smart QR Security</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">⬡</span>
+            <span>QR<span class="brand-accent">SHIELD</span></span>
+        </a>
+        <nav>
+            <a class="active" href="#scanner">Scanner</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#history">History</a>
+        </nav>
+        <div class="status-pill"><span></span> SECURITY TOOL</div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="eyebrow"><span class="eyebrow-line"></span> SMART QR SECURITY <span class="eyebrow-line"></span></div>
+            <h1>Scan smart.<br><span>Stay protected.</span></h1>
+            <p class="hero-copy">Check where a QR code leads before you visit. Reveal its destination and inspect common warning signs in seconds.</p>
+            <div class="trust-row">
+                <span>◈ No link is opened automatically</span>
+                <span>◈ Simple risk indicators</span>
+                <span>◈ Scan history saved locally</span>
+            </div>
+        </section>
+
+        <section class="workspace" id="scanner">
+            <div class="scanner-card panel">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">01 / ANALYZE</div>
+                        <h2>QR code scanner</h2>
+                        <p>Upload a clear QR image to extract its content.</p>
+                    </div>
+                    <div class="heading-icon">▦</div>
+                </div>
+
+                <label class="upload-zone" for="qrInput" id="dropZone">
+                    <input type="file" id="qrInput" accept="image/png,image/jpeg,image/webp">
+                    <span class="upload-icon">↑</span>
+                    <strong>Drop your QR image here</strong>
+                    <span class="upload-sub">or <span class="browse-text">browse files</span></span>
+                    <span class="file-types">PNG, JPG or WEBP · Max 5 MB</span>
+                </label>
+                <div class="selected-file" id="selectedFile" hidden></div>
+                <button class="primary-button" id="scanBtn" type="button">
+                    <span>Scan QR code</span><span class="button-arrow">→</span>
+                </button>
+                <div class="inline-message" id="message" role="status"></div>
+
+                <div class="privacy-note"><span>◈</span> Your browser reads the QR image. The extracted text is checked by this app; the destination website is never opened.</div>
+            </div>
+
+            <aside class="side-column">
+                <div class="stats-grid">
+                    <div class="stat-card panel">
+                        <span class="stat-label">TOTAL SCANS</span>
+                        <strong id="totalScans">0</strong>
+                        <span class="stat-foot">All-time checks</span>
+                    </div>
+                    <div class="stat-card panel">
+                        <span class="stat-label">HIGH RISK</span>
+                        <strong class="danger-text" id="highScans">0</strong>
+                        <span class="stat-foot">Needs attention</span>
+                    </div>
+                </div>
+                <div class="info-card panel" id="how-it-works">
+                    <div class="info-icon">⌁</div>
+                    <h3>Think before you scan.</h3>
+                    <p>QR codes can hide destinations. QR Shield reveals the encoded content and checks for common URL red flags.</p>
+                    <div class="info-divider"></div>
+                    <div class="mini-feature"><span>01</span> Extract the QR content</div>
+                    <div class="mini-feature"><span>02</span> Inspect URL indicators</div>
+                    <div class="mini-feature"><span>03</span> Review the risk report</div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="result-section panel" id="resultSection" hidden aria-live="polite">
+            <div class="result-top">
+                <div>
+                    <div class="section-kicker">02 / SCAN REPORT</div>
+                    <h2>Security analysis</h2>
+                </div>
+                <span class="result-badge" id="riskBadge">LOW RISK</span>
+            </div>
+            <div class="result-grid">
+                <div class="score-wrap">
+                    <div class="score-ring" id="scoreRing"><div><strong id="riskScore">0</strong><small>/ 100</small></div></div>
+                    <span class="score-caption">RISK SCORE</span>
+                </div>
+                <div class="result-details">
+                    <h3 id="resultTitle">Analysis complete</h3>
+                    <p id="resultSummary"></p>
+                    <div class="destination-label">EXTRACTED CONTENT</div>
+                    <div class="destination-box" id="destination"></div>
+                    <div class="destination-label findings-label">FINDINGS</div>
+                    <ul id="findingsList" class="findings-list"></ul>
+                </div>
+            </div>
+            <p class="disclaimer">Important: this is a basic educational heuristic scanner, not a full malware or reputation service. A low score does not guarantee a URL is safe.</p>
+        </section>
+
+        <section class="history-section" id="history">
+            <div class="history-heading">
+                <div>
+                    <div class="section-kicker">03 / ACTIVITY</div>
+                    <h2>Recent scans</h2>
+                </div>
+                <button class="text-button" id="clearHistory" type="button">Clear history</button>
+            </div>
+            <div class="history-list panel" id="historyList">
+                <div class="empty-state">No scans yet. Your recent checks will appear here.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <a class="brand footer-brand" href="/"><span class="brand-mark">⬡</span><span>QR<span class="brand-accent">SHIELD</span></span></a>
+        <span>Built for safer QR code awareness.</span>
+        <span class="footer-year">© 2026 QR Shield</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
